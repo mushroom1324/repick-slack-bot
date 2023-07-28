@@ -36,6 +36,8 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
+          cd /home/ubuntu/srv/ubuntu/
+          sudo chmod 666 /var/run/docker.sock
           docker pull repick/slack-bot:latest
           docker stop web-container || true
           docker rm web-container || true
