@@ -27,7 +27,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: popcoder/slack-bot:latest
+        tags: repick/slack-bot:latest
 
     - name: SSH and deploy
       uses: appleboy/ssh-action@master
@@ -36,7 +36,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          docker pull popcoder/slack-bot:latest
+          docker pull repick/slack-bot:latest
           docker stop web-container || true
           docker rm web-container || true
-          docker run -d --name web-container -p 80:5000 --env-file .env popcoder/slack-bot:latest
+          docker run -d --name web-container -p 80:5000 --env-file .env repick/slack-bot:latest
