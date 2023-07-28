@@ -9,3 +9,11 @@ services:
       - 5000:5000
     env_file:
       - .env
+
+  nginx:
+    container_name: nginx
+    image: repick/repick-nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
