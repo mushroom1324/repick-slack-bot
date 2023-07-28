@@ -36,9 +36,4 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /home/ubuntu/srv/ubuntu/
-          sudo chmod 666 /var/run/docker.sock
-          sudo docker rm -f $(docker ps -qa)
-          docker pull repick/slack-bot:latest
-          docker-compose up -d
-          docker image prune -f
+          sh /home/ubuntu/srv/ubuntu/config/scripts/deploy.sh
