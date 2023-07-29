@@ -3,7 +3,7 @@ services:
   web:
     build: .
     command: flask run --host=0.0.0.0
-    image: repick/slack-bot
+    image: repick/slack-bot-web
     ports:
       - 5000:5000
     env_file:

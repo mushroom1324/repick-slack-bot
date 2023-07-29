@@ -102,6 +102,24 @@ def handle_help(query, channel):
         post_message(token, channel, "홈피팅 관리 명령어는 '홈피팅은 아직 미구현 기능입니다.")
     if query[0] == "정산":
         post_message(token, channel, "정산 관리 명령어는 '정산 [상품번호]'입니다.")
+    else:
+        post_message(token, channel, "도움말 관리 명령어는 '도움말 [구독/판매/구매/홈피팅/정산]'입니다.")
+
+
+def handle_other_msg(query, channel):
+    if query[0] == "농담":
+        post_message(token, channel, "당신 얼굴이 농담이에요.")
+    elif query[0] == "테스트":
+        post_message(token, channel, "피키 1.0입니다.")
+    elif query[0] == "뭐해":
+        post_message(token, channel, "일중입니다. 당신이랑 대화하는것도 일입니다.")
+    elif query[0] == "찬혁":
+        post_message(token, channel, "찬혁님은 제 주인님입니다. 업무 자동화를 위해 저를 만드셨어요.")
+    elif query[0] == "피키":
+        post_message(token, channel, "피키는 제 이름이에요. 저는 리픽 서비스를 위해 밤낮 없이 일한답니다.")
+    else:
+        post_message(token, channel, "잘못된 입력입니다. 명령어를 알고싶다면 '도움말'을 입력하세요.")
+        return "잘못된 입력입니다."
 
 def handle_msg(user_query, channel):
     msg = user_query.split()
@@ -121,10 +139,9 @@ def handle_msg(user_query, channel):
         else:
             post_message(token, channel, "도움말 관리 명령어는 '도움말 [구독/판매/구매/홈피팅/정산]'입니다.")
     elif msg[0] == "안녕":
-        post_message(token, channel, "안녕하세요. 피키입니다. 명령어를 알고싶다면 '도움말'을 입력하세요!")
+        post_message(token, channel, "안녕하세요! 피키입니다. 명령어를 알고싶다면 '도움말'을 입력하세요 :)")
     else:
-        post_message(token, channel, "잘못된 입력입니다. 명령어를 알고싶다면 '도움말'을 입력하세요.")
-        return "잘못된 입력입니다."
+        handle_other_msg(user_query, channel)
 
     return user_query
 
