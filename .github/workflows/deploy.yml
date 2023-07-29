@@ -22,20 +22,20 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: repick/slack-bot:latest
+#    - name: Build and push Docker image
+#      uses: docker/build-push-action@v2
+#      with:
+#        context: .
+#        push: true
+#        tags: repick/slack-bot:latest
 
-    - name: Build and push Docker image - nginx
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: repick/slack-bot-nginx:latest
-        dockerfile: dockerfile-nginx
+    - name: web docker build and push
+      run: |
+        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker build -t repick/slack-bot-web .
+        docker push repick/slack-bot-web
+        docker build -f dockerfile-nginx -t repick/slack-bot-nginx .
+        docker push repick/slack-bot-nginx
 
     - name: SSH and deploy
       uses: appleboy/ssh-action@master
@@ -47,7 +47,7 @@ jobs:
           cd /home/ubuntu/srv/ubuntu/
           sudo chmod 666 /var/run/docker.sock
           sudo docker rm -f $(docker ps -qa)
-          sudo docker pull repick/slack-bot
+          sudo docker pull repick/slack-bot-web
           sudo docker pull repick/slack-bot-nginx
           docker-compose up -d
           docker image prune -f
