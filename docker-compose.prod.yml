@@ -11,7 +11,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: repick/repick-nginx
+    image: repick/slack-bot-nginx
     ports:
       - 80:80
     depends_on:
