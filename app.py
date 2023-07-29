@@ -108,9 +108,9 @@ def handle_help(query, channel):
 
 def handle_other_msg(query, channel):
     if query[0] == "농담":
-        post_message(token, channel, "당신 얼굴이 농담이에요.")
+        post_message(token, channel, "그런건 없어요~")
     elif query[0] == "테스트":
-        post_message(token, channel, "피키 1.0입니다.")
+        post_message(token, channel, "피키 v1.1 ")
     elif query[0] == "뭐해":
         post_message(token, channel, "일중입니다. 당신이랑 대화하는것도 일입니다.")
     elif query[0] == "찬혁":
@@ -120,6 +120,7 @@ def handle_other_msg(query, channel):
     else:
         post_message(token, channel, "잘못된 입력입니다. 명령어를 알고싶다면 '도움말'을 입력하세요.")
         return "잘못된 입력입니다."
+
 
 def handle_msg(user_query, channel):
     msg = user_query.split()
@@ -141,7 +142,7 @@ def handle_msg(user_query, channel):
     elif msg[0] == "안녕":
         post_message(token, channel, "안녕하세요! 피키입니다. 명령어를 알고싶다면 '도움말'을 입력하세요 :)")
     else:
-        handle_other_msg(user_query, channel)
+        handle_other_msg(msg, channel)
 
     return user_query
 
