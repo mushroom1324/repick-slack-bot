@@ -110,7 +110,7 @@ def handle_other_msg(query, channel):
     if query[0] == "농담":
         post_message(token, channel, "그런건 없어요~")
     elif query[0] == "테스트":
-        post_message(token, channel, "피키 v1.1 ")
+        post_message(token, channel, "피키 v1.2 ")
     elif query[0] == "뭐해":
         post_message(token, channel, "일중입니다. 당신이랑 대화하는것도 일입니다.")
     elif query[0] == "찬혁":
@@ -125,20 +125,35 @@ def handle_other_msg(query, channel):
 def handle_msg(user_query, channel):
     msg = user_query.split()
     if msg[0] == "구독":
-        handle_subscribe(msg[1:], channel)
-    elif msg[0] == "판매":
-        handle_sell_order(msg[1:], channel)
-    elif msg[0] == "구매":
-        handle_order(msg[1:], channel)
-    elif msg[0] == "홈피팅":
-        handle_home_fitting(msg[1:], channel)
-    elif msg[0] == "정산":
-        handle_expense_settlement(msg[1:], channel)
-    elif msg[0] == "도움말":
-        if len(msg) > 1:
-            handle_help(msg[1:], channel)
+        if len(msg) == 1:
+            post_message(token, channel, "구독 관리 명령어는 '구독 [승인/거절] [주문번호]'입니다.")
         else:
+            handle_subscribe(msg[1:], channel)
+    elif msg[0] == "판매":
+        if len(msg) == 1:
+            post_message(token, channel, "판매 관리 명령어는 '판매 [주문번호] [배달됨/취소됨/처리됨]'입니다.")
+        else:
+            handle_sell_order(msg[1:], channel)
+    elif msg[0] == "구매":
+        if len(msg) == 1:
+            post_message(token, channel, "구매 관리 명령어는 '구매 [주문번호] [입금완료/배송중/배송완료/취소됨]'입니다.")
+        else:
+            handle_order(msg[1:], channel)
+    elif msg[0] == "홈피팅":
+        if len(msg) == 1:
+            post_message(token, channel, "홈피팅 관리 명령어는 '홈피팅은 아직 미구현 기능입니다.")
+        else:
+            handle_home_fitting(msg[1:], channel)
+    elif msg[0] == "정산":
+        if len(msg) == 1:
+            post_message(token, channel, "정산 관리 명령어는 '정산 [상품번호]'입니다.")
+        else:
+            handle_expense_settlement(msg[1:], channel)
+    elif msg[0] == "도움말":
+        if len(msg) == 1:
             post_message(token, channel, "도움말 관리 명령어는 '도움말 [구독/판매/구매/홈피팅/정산]'입니다.")
+        else:
+            handle_help(msg[1:], channel)
     elif msg[0] == "안녕":
         post_message(token, channel, "안녕하세요! 피키입니다. 명령어를 알고싶다면 '도움말'을 입력하세요 :)")
     else:
