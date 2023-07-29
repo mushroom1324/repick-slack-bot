@@ -39,7 +39,7 @@ jobs:
           cd /home/ubuntu/srv/ubuntu/
           sudo chmod 666 /var/run/docker.sock
           sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/repick-web
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/repick-nginx
+          sudo docker pull repick/slack-bot
+          sudo docker pull repick/repick-nginx
           docker-compose up -d
           docker image prune -f
