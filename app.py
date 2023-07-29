@@ -110,13 +110,19 @@ def handle_other_msg(query, channel):
     if query[0] == "농담":
         post_message(token, channel, "그런건 없어요~")
     elif query[0] == "테스트":
-        post_message(token, channel, "피키 v1.2 ")
+        post_message(token, channel, "피키 v1.3 ")
     elif query[0] == "뭐해":
         post_message(token, channel, "일중입니다. 당신이랑 대화하는것도 일입니다.")
     elif query[0] == "찬혁":
         post_message(token, channel, "찬혁님은 제 주인님입니다. 업무 자동화를 위해 저를 만드셨어요.")
     elif query[0] == "피키":
         post_message(token, channel, "피키는 제 이름이에요. 저는 리픽 서비스를 위해 밤낮 없이 일한답니다.")
+    elif query[0] == "비난":
+        post_message(token, channel, "뭐래는거야")
+    elif query[0] == "좋아요":
+        post_message(token, channel, "좋아요")
+    elif query[0] == "싫어요":
+        post_message(token, channel, "싫어요")
     else:
         post_message(token, channel, "잘못된 입력입니다. 명령어를 알고싶다면 '도움말'을 입력하세요.")
         return "잘못된 입력입니다."
