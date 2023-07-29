@@ -29,11 +29,13 @@ jobs:
         push: true
         tags: repick/slack-bot:latest
 
-    - name: web docker build and push nginx
-      run: |
-        docker build -f dockerfile-nginx -t repick/slack-bot-nginx .
-        docker push repick/slack-bot-nginx
-
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: repick/slack-bot:latest
+        dockerfile: dockerfile-nginx
 
     - name: SSH and deploy
       uses: appleboy/ssh-action@master
