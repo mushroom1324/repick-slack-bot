@@ -34,8 +34,8 @@ jobs:
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t repick/slack-bot-web .
         docker push repick/slack-bot-web
-        docker build -f dockerfile-nginx -t repick/slack-bot-nginx .
-        docker push repick/slack-bot-nginx
+#        docker build -f dockerfile-nginx -t repick/slack-bot-nginx .
+#        docker push repick/slack-bot-nginx
 
     - name: SSH and deploy
       uses: appleboy/ssh-action@master
