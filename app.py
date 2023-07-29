@@ -183,6 +183,9 @@ def event_handler(event_type, slack_event):
 def hello_there():
 
     slack_event = json.loads(request.data)
+
+    print(slack_event)
+
     if "challenge" in slack_event:
         return make_response(slack_event["challenge"], 200, {"content_type": "application/json"})
     if "event" in slack_event:
