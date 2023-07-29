@@ -200,12 +200,15 @@ def hello_there():
     return make_response("There are no slack request events", 404, {"X-Slack-No-Retry": 1})
 
 
-# /test로 오는 POST 방식의 요청은 application/x-www-form-urlencoded 방식으로 온다.
-# 그 중 &text=94070 이런식으로 text를 뽑아내는 로직
 @app.route('/command', methods=['POST'])
 def test():
     handle_msg(request.form['text'], request.form['channel_id'])
     return make_response("피키 커맨드 호출됨", 200, )
+
+@app.route('/secret', methods=['POST'])
+def secret():
+    post_message(token, request.form['channel_id'], request.form['text'])
+    return make_response("익명으로 메세지를 전달합니다.", 200, )
 
 
 if __name__ == '__main__':
