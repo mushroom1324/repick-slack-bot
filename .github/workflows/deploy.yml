@@ -29,6 +29,12 @@ jobs:
         push: true
         tags: repick/slack-bot:latest
 
+    - name: web docker build and push nginx
+      run: |
+        docker build -f dockerfile-nginx -t repick/slack-bot-nginx .
+        docker push repick/slack-bot-nginx
+
+
     - name: SSH and deploy
       uses: appleboy/ssh-action@master
       with:
@@ -40,6 +46,6 @@ jobs:
           sudo chmod 666 /var/run/docker.sock
           sudo docker rm -f $(docker ps -qa)
           sudo docker pull repick/slack-bot
-          sudo docker pull repick/repick-nginx
+          sudo docker pull repick/slack-bot-nginx
           docker-compose up -d
           docker image prune -f
