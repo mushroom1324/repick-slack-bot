@@ -47,7 +47,7 @@ jobs:
           cd /home/ubuntu/srv/ubuntu/
           sudo chmod 666 /var/run/docker.sock
           sudo docker rm -f $(docker ps -qa)
-          sudo docker pull repick/slack-bot-web
-          sudo docker pull repick/slack-bot-nginx
+          sudo docker pull repick/slack-bot-web:latest
+          sudo docker pull repick/slack-bot-nginx:latest
           docker-compose up -d
           docker image prune -f
