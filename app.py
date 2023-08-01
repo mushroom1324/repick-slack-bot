@@ -216,11 +216,120 @@ def secret():
     return make_response("익명으로 메세지를 전달합니다.", 200, )
 
 
+@app.route('/subscribe/add', methods=['POST'])
+def subscribe_add():
+    return subscribe("https://repick.seoul.kr/api/slack/subscribe/add", request.form['text'])
+
+
+@app.route('/subscribe/deny', methods=['POST'])
+def subscribe_deny():
+    return subscribe("https://repick.seoul.kr/api/slack/subscribe/deny", request.form['text'])
+
+
+def subscribe(request_url, query):
+    requests.post(request_url,
+                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  json={
+                      "orderNumber": query
+                  })
+
+    return make_response("구독 승인을 처리합니다: " + query + "\n3-3-1 구독 신청 알림 페이지에서 결과를 확인하세요.", 200, )
+
+
+@app.route('/order-update', methods=['POST'])
+def order_update():
+    request_url = "https://repick.seoul.kr/api/slack/order/update"
+    query = request.form['text'].split()
+
+    if query[1] == "입금완료":
+        state = "PREPARING"
+    elif query[1] == "배송중":
+        state = "DELIVERING"
+    elif query[1] == "배송완료":
+        state = "DELIVERED"
+    elif query[1] == "취소됨":
+        state = "CANCELED"
+    else:
+        return make_response("상태는 '입금완료', '배송중', '배송완료', '취소됨' 중 하나여야 합니다.", 200, )
+
+    requests.post(request_url,
+                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  json={
+                      "orderNumber": query[0],
+                      "sellState": state
+                  })
+
+    return make_response("주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n3-3-4 구독 신청 알림 페이지에서 결과를 확인하세요.", 200, )
+
+@app.route('/home-fitting-update', methods=['POST'])
+def home_fitting_update():
+    request_url = 'https://repick.seoul.kr/api/home-fitting/admin/'
+    query = request.form['text'].split()
+    request_url += query[0]
+
+    if query[1] == '요청됨':
+        request_url += "?homeFittingState=REQUESTED"
+    if query[1] == '배송중':
+        request_url += "?homeFittingState=DELIVERING"
+    if query[1] == '배송됨':
+        request_url += "?homeFittingState=DELIVERED"
+    if query[1] == '반품신청됨':
+        request_url += "?homeFittingState=RETURN_REQUESTED"
+    if query[1] == '반품됨':
+        request_url += "?homeFittingState=RETURNED"
+    if query[1] == '구매됨':
+        request_url += "?homeFittingState=PURCHASED"
+
+    headers = {
+        'accept': '*/*',
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json",
+    }
+
+    requests.patch(request_url, headers=headers)
+
+    res = "홈피팅 " + query[0] + "번의 상태를 " + query[1] + " 상태로 변경 완료했습니다.\n\n"
+
+    return res
+
+
 @app.route('/home-fitting-list', methods=['POST'])
 def home_fitting_list():
     request_url = "https://repick.seoul.kr/api/home-fitting/admin"
+    query = request.form['text']
 
-    return make_response(requests.get(request_url, headers={"Authorization": "Bearer " + token}), 200, )
+    if query == '요청됨':
+        request_url += "?homeFittingState=REQUESTED"
+    if query == '배송중':
+        request_url += "?homeFittingState=DELIVERING"
+    if query == '배송됨':
+        request_url += "?homeFittingState=DELIVERED"
+    if query == '반품신청됨':
+        request_url += "?homeFittingState=RETURN_REQUESTED"
+    if query == '반품됨':
+        request_url += "?homeFittingState=RETURNED"
+    if query == '구매됨':
+        request_url += "?homeFittingState=PURCHASED"
+
+    headers = {
+        'accept': '*/*',
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json",
+    }
+
+    response = requests.get(request_url, headers=headers)
+
+    res = "홈피팅 " + query + " 리스트입니다.\n\n"
+    for each in response.json():
+        res += handle_home_fitting_response(each) + "\n"
+
+    return res
+
+
+def handle_home_fitting_response(msg):
+    # name, homeFittingId, lastModifiedDate를 반환
+    return "홈피팅 번호: " + str(msg['homeFittingId']) + " " + msg['product']['name'] + " " + msg['lastModifiedDate']
+
 
 
 if __name__ == '__main__':
