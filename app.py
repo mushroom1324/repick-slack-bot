@@ -4,7 +4,6 @@ from flask import Flask, request, make_response, jsonify
 from slacker import Slacker
 import requests
 
-
 token = os.environ.get('TOKEN')
 access_token = os.environ.get('ACCESS_TOKEN')
 
@@ -39,10 +38,14 @@ def handle_subscribe(query, channel):
 
 def handle_order(query, channel):
     request_url = "https://repick.seoul.kr/api/slack/order/update"
-    if query[1] == "입금완료": state = "PREPARING"
-    elif query[1] == "배송중": state = "DELIVERING"
-    elif query[1] == "배송완료": state = "DELIVERED"
-    elif query[1] == "취소됨": state = "CANCELED"
+    if query[1] == "입금완료":
+        state = "PREPARING"
+    elif query[1] == "배송중":
+        state = "DELIVERING"
+    elif query[1] == "배송완료":
+        state = "DELIVERED"
+    elif query[1] == "취소됨":
+        state = "CANCELED"
     else:
         post_message(token, channel, "상태는 '입금완료', '배송중', '배송완료', '취소됨' 중 하나여야 합니다.")
         return "잘못된 입력입니다."
@@ -50,16 +53,19 @@ def handle_order(query, channel):
     requests.post(request_url,
                   headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
                   json={
-                        "orderNumber": query[0],
-                        "sellState": state
+                      "orderNumber": query[0],
+                      "sellState": state
                   })
 
 
 def handle_sell_order(query, channel):
     request_url = "https://repick.seoul.kr/api/slack/sell/update"
-    if query[1] == "배달됨": state = "DELIVERED"
-    elif query[1] == "취소됨": state = "CANCELED"
-    elif query[1] == "처리됨": state = "PUBLISHED"
+    if query[1] == "배달됨":
+        state = "DELIVERED"
+    elif query[1] == "취소됨":
+        state = "CANCELED"
+    elif query[1] == "처리됨":
+        state = "PUBLISHED"
     else:
         post_message(token, channel, "상태는 '배달됨', '취소됨', '처리됨' 중 하나여야 합니다.")
         return "잘못된 입력입니다."
@@ -67,8 +73,8 @@ def handle_sell_order(query, channel):
     requests.post(request_url,
                   headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
                   json={
-                        "orderNumber": query[0],
-                        "sellState": state
+                      "orderNumber": query[0],
+                      "sellState": state
                   })
 
 
@@ -87,7 +93,7 @@ def handle_expense_settlement(query, channel):
     requests.post(request_url,
                   headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
                   json={
-                        "productNumber": query[0],
+                      "productNumber": query[0],
                   })
 
 
@@ -169,7 +175,6 @@ def handle_msg(user_query, channel):
 
 
 def event_handler(event_type, slack_event):
-
     channel = slack_event["event"]["channel"]
     string_slack_event = str(slack_event)
     if string_slack_event.find("{'type': 'user', 'user_id': ") != -1:  # 멘션으로 호출
@@ -187,7 +192,6 @@ def event_handler(event_type, slack_event):
 
 @app.route('/', methods=['POST'])
 def hello_there():
-
     slack_event = json.loads(request.data)
 
     print(slack_event)
@@ -205,14 +209,19 @@ def test():
     handle_msg(request.form['text'], request.form['channel_id'])
     return make_response("피키 커맨드 호출됨", 200, )
 
+
 @app.route('/secret', methods=['POST'])
 def secret():
     post_message(token, request.form['channel_id'], request.form['text'])
     return make_response("익명으로 메세지를 전달합니다.", 200, )
 
 
+@app.route('/home-fitting-list', methods=['POST'])
+def home_fitting_list():
+    request_url = "https://repick.seoul.kr/api/home-fitting/admin"
+
+    return make_response(requests.get(request_url, headers={"Authorization": "Bearer " + token}), 200, )
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
-
-
-
