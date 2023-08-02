@@ -246,9 +246,14 @@ def subscribe_list():
 
     res = "구독 요청 리스트입니다.\n\n"
     for each in response.json():
-        res += handle_home_fitting_response(each) + "\n"
+        res += handle_subscribe_response(each) + "\n"
 
     return res
+
+
+def handle_subscribe_response(msg):
+    # orderNumber, name, nickname, phoneNumber, subscribeType, lastModifiedDate 반환
+    return "주문번호: " + msg['orderNumber'] + " 실명: " + msg['name'] + " 닉네임: " + msg['nickname'] + " 전화번호: " + msg['phoneNumber'] + " 구독타입: " + msg['subscribeType'] + " 신청일: " + msg['lastModifiedDate']
 
 
 @app.route('/order-update', methods=['POST'])
@@ -297,9 +302,14 @@ def order_list():
 
     res = "주문: " + query + " 리스트입니다.\n\n"
     for each in response.json():
-        res += handle_home_fitting_response(each) + "\n"
+        res += handle_order_response(each) + "\n"
 
     return res
+
+
+def handle_order_response(msg):
+    # orderNumber 반환
+    return "주문번호: " + msg['orderNumber']
 
 
 @app.route('/sell-order-update', methods=['POST'])
@@ -346,9 +356,16 @@ def sell_order_list():
 
     res = "판매 주문: " + query + " 리스트입니다.\n\n"
     for each in response.json():
-        res += handle_home_fitting_response(each) + "\n"
+        res += handle_sell_order_response(each) + "\n"
 
     return res
+
+
+def handle_sell_order_response(msg):
+    return "주문번호: " + msg['orderNumber'] + " 실명: " + msg['name'] + " 닉네임: " + msg['nickname'] + " 전화번호: " + msg['phoneNumber']\
+        + "\n 신청일: " + msg['createdDate'] + "반환희망일: " + msg['returnDate'] \
+        + "\n 수거주소: " + msg['address']['mainAddress'] + " " + msg['address']['detailAddress'] + " " + msg['address']['zipCode'] \
+        + "\n 요청사항: " + msg['requestDetail'] + " 수거옷장 수량: " + msg['productQuantity']
 
 
 @app.route('/home-fitting-update', methods=['POST'])
