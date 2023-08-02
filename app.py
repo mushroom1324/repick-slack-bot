@@ -258,7 +258,7 @@ def order_update():
 
 @app.route('/sell-order-update', methods=['POST'])
 def sell_order_update():
-    request_url = "https://repick.seoul.kr/api/sell/admin/update"
+    request_url = "https://repick.seoul.kr/api/slack/sell/update"
     query = request.form['text'].split()
 
     if query[1] == "요청됨":
@@ -354,7 +354,7 @@ def handle_home_fitting_response(msg):
 
 @app.route('/settlement-update', methods=['POST'])
 def settlement():
-    request_url = "https://repick.seoul.kr/api/settlement/admin/update"
+    request_url = "https://repick.seoul.kr/api/slack/settlement/update"
     query = request.form['text']
 
     requests.post(request_url,
