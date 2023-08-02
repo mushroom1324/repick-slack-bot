@@ -363,10 +363,14 @@ def sell_order_list():
 
 
 def handle_sell_order_response(msg):
-    return "주문번호: " + msg['orderNumber'] + " 실명: " + msg['name'] + " 닉네임: " + msg['nickname'] + " 전화번호: " + msg['phoneNumber']\
-        + "\n 신청일: " + msg['createdDate'] + "반환희망일: " + msg['returnDate'] \
+    return "주문번호: " + msg['orderNumber'] \
+        + "\n 실명: " + msg['name'] \
+        + "\n 전화번호: " + msg['phoneNumber'] \
+        + "\n 신청일: " + msg['createdDate']\
+        + "\n반환희망일: " + msg['returnDate'] \
         + "\n 수거주소: " + msg['address']['mainAddress'] + " " + msg['address']['detailAddress'] + " " + msg['address']['zipCode'] \
-        + "\n 요청사항: " + msg['requestDetail'] + " 수거옷장 수량: " + msg['productQuantity']
+        + "\n 요청사항: " + msg['requestDetail'] \
+        + "\n 수거옷장 수량: " + str(msg['productQuantity']) + "\n"
 
 
 @app.route('/home-fitting-update', methods=['POST'])
@@ -430,7 +434,9 @@ def home_fitting_list():
 
 def handle_home_fitting_response(msg):
     # name, homeFittingId, lastModifiedDate를 반환
-    return "홈피팅 번호: " + str(msg['homeFittingId']) + " 실명: " + msg['product']['name'] + " 날짜: " + msg['lastModifiedDate']
+    return "홈피팅 번호: " + str(msg['homeFittingId'])\
+        + " 실명: " + msg['product']['name']\
+        + " 날짜: " + msg['lastModifiedDate']
 
 
 @app.route('/settlement-update', methods=['POST'])
