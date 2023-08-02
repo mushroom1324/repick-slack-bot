@@ -123,12 +123,6 @@ def handle_other_msg(query, channel):
         post_message(token, channel, "찬혁님은 제 주인님입니다. 업무 자동화를 위해 저를 만드셨어요.")
     elif query[0] == "피키":
         post_message(token, channel, "피키는 제 이름이에요. 저는 리픽 서비스를 위해 밤낮 없이 일한답니다.")
-    elif query[0] == "비난":
-        post_message(token, channel, "뭐래는거야")
-    elif query[0] == "좋아요":
-        post_message(token, channel, "좋아요")
-    elif query[0] == "싫어요":
-        post_message(token, channel, "싫어요")
     else:
         post_message(token, channel, "잘못된 입력입니다. 명령어를 알고싶다면 '도움말'을 입력하세요.")
         return "잘못된 입력입니다."
@@ -233,7 +227,7 @@ def subscribe(request_url, query):
                       "orderNumber": query
                   })
 
-    return make_response("구독 승인을 처리합니다: " + query + "\n3-3-1 구독 신청 알림 페이지에서 결과를 확인하세요.", 200, )
+    return make_response("구독 승인을 처리합니다: " + query + "\n구독 페이지에서 결과를 확인하세요.", 200, )
 
 
 @app.route('/order-update', methods=['POST'])
@@ -259,7 +253,34 @@ def order_update():
                       "sellState": state
                   })
 
-    return make_response("주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n3-3-4 구독 신청 알림 페이지에서 결과를 확인하세요.", 200, )
+    return make_response("주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n주문 페이지에서 결과를 확인하세요.", 200, )
+
+
+@app.route('/sell-order-update', methods=['POST'])
+def sell_order_update():
+    request_url = "https://repick.seoul.kr/api/sell/admin/update"
+    query = request.form['text'].split()
+
+    if query[1] == "요청됨":
+        state = "REQUESTED"
+    elif query[1] == "취소됨":
+        state = "CANCELLED"
+    elif query[1] == "배송됨":
+        state = "DELIVERED"
+    elif query[1] == "처리됨":
+        state = "PUBLISHED"
+    else:
+        return make_response("상태는 '입금완료', '배송중', '배송완료', '취소됨' 중 하나여야 합니다.", 200, )
+
+    requests.post(request_url,
+                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  json={
+                    "orderNumber": query[0],
+                    "sellState": state
+                  })
+
+    return make_response("판매 주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n옷장 수거 페이지에서 결과를 확인하세요.", 200, )
+
 
 @app.route('/home-fitting-update', methods=['POST'])
 def home_fitting_update():
@@ -330,6 +351,19 @@ def handle_home_fitting_response(msg):
     # name, homeFittingId, lastModifiedDate를 반환
     return "홈피팅 번호: " + str(msg['homeFittingId']) + " " + msg['product']['name'] + " " + msg['lastModifiedDate']
 
+
+@app.route('/settlement-update', methods=['POST'])
+def settlement():
+    request_url = "https://repick.seoul.kr/api/settlement/admin/update"
+    query = request.form['text']
+
+    requests.post(request_url,
+                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  json={
+                      "productNumber": query
+                  })
+
+    return make_response("정산을 완료합니다: " + query + "\n정산 페이지에서 결과를 확인하세요.", 200, )
 
 
 if __name__ == '__main__':
