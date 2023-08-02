@@ -14,8 +14,7 @@ app = Flask(__name__)
 
 def get_message_from_server(url):
     headers = {
-        'accept': '*/*',
-        "Authorization": "Bearer " + token,
+        "Authorization": "Bearer " + access_token,
         "Content-Type": "application/json",
     }
 
@@ -40,7 +39,7 @@ def handle_subscribe(query, channel):
 
     # 정상적 접근 : 서버로 요청
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query[1]
                   })
@@ -61,7 +60,7 @@ def handle_order(query, channel):
         return "잘못된 입력입니다."
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query[0],
                       "sellState": state
@@ -81,7 +80,7 @@ def handle_sell_order(query, channel):
         return "잘못된 입력입니다."
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query[0],
                       "sellState": state
@@ -89,7 +88,6 @@ def handle_sell_order(query, channel):
 
 
 def handle_home_fitting(query, channel):
-    request_url = "https://repick.seoul.kr/api/slack/homefitting/update"
     post_message(token, channel, "홈피팅 관리는 미구현 기능입니다. 스웨거를 통한 신청 바랍니다.")
 
 
@@ -101,7 +99,7 @@ def handle_expense_settlement(query, channel):
         return "잘못된 입력입니다."
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "productNumber": query[0],
                   })
@@ -309,8 +307,9 @@ def order_list():
 
 
 def handle_order_response(msg):
-    # orderNumber 반환
-    return "주문번호: " + msg['orderNumber']
+    return "주문번호: " + msg['order']['orderNumber'] + " 실명: " + msg['order']['personName'] + " 전화번호: " + msg['order']['phoneNumber'] \
+        + "\n 주소: " + msg['order']['address']['mainAddress'] + " " + msg['order']['address']['detailAddress'] + " " + msg['order']['address']['zipCode'] \
+        + "\n 주문일: " + msg['order']['lastModifiedDate'] + "\n"
 
 
 @app.route('/sell-order-update', methods=['POST'])
