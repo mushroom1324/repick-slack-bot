@@ -12,6 +12,16 @@ slack = Slacker(token)
 app = Flask(__name__)
 
 
+def get_message_from_server(url):
+    headers = {
+        'accept': '*/*',
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json",
+    }
+
+    return requests.get(url, headers=headers)
+
+
 def post_message(token, channel, text):
     response = requests.post("https://slack.com/api/chat.postMessage",
                              headers={"Authorization": "Bearer " + token},
@@ -230,6 +240,17 @@ def subscribe(request_url, query):
     return make_response("구독 승인을 처리합니다: " + query + "\n구독 페이지에서 결과를 확인하세요.", 200, )
 
 
+@app.route('/subscribe-list', methods=['POST'])
+def subscribe_list():
+    response = get_message_from_server("https://repick.seoul.kr/api/subscribe/admin/requested")
+
+    res = "구독 요청 리스트입니다.\n\n"
+    for each in response.json():
+        res += handle_home_fitting_response(each) + "\n"
+
+    return res
+
+
 @app.route('/order-update', methods=['POST'])
 def order_update():
     request_url = "https://repick.seoul.kr/api/slack/order/update"
@@ -256,6 +277,31 @@ def order_update():
     return make_response("주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n주문 페이지에서 결과를 확인하세요.", 200, )
 
 
+@app.route('/order-list', methods=['POST'])
+def order_list():
+    request_url = "https://repick.seoul.kr/api/order/admin/state"
+    query = request.form['text']
+
+    if query == '미입금':
+        state = "UNPAID"
+    elif query == '입금완료':
+        state = "PREPARING"
+    elif query == '배송중':
+        state = "DELIVERING"
+    elif query == '배송됨':
+        state = "DELIVERED"
+    elif query == '취소됨':
+        state = "CANCELED"
+
+    response = get_message_from_server(request_url + "?orderState=" + state)
+
+    res = "주문: " + query + " 리스트입니다.\n\n"
+    for each in response.json():
+        res += handle_home_fitting_response(each) + "\n"
+
+    return res
+
+
 @app.route('/sell-order-update', methods=['POST'])
 def sell_order_update():
     request_url = "https://repick.seoul.kr/api/slack/sell/update"
@@ -280,6 +326,29 @@ def sell_order_update():
                   })
 
     return make_response("판매 주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n옷장 수거 페이지에서 결과를 확인하세요.", 200, )
+
+
+@app.route('/sell-order-list', methods=['POST'])
+def sell_order_list():
+    request_url = "https://repick.seoul.kr/api/sell/admin/"
+    query = request.form['text']
+
+    if query == '요청됨':
+        state = "requested"
+    elif query == '취소됨':
+        state = "cancelled"
+    elif query == '배송됨':
+        state = "delivered"
+    elif query == '처리됨':
+        state = "published"
+
+    response = get_message_from_server(request_url + state)
+
+    res = "판매 주문: " + query + " 리스트입니다.\n\n"
+    for each in response.json():
+        res += handle_home_fitting_response(each) + "\n"
+
+    return res
 
 
 @app.route('/home-fitting-update', methods=['POST'])
@@ -332,13 +401,7 @@ def home_fitting_list():
     if query == '구매됨':
         request_url += "?homeFittingState=PURCHASED"
 
-    headers = {
-        'accept': '*/*',
-        "Authorization": "Bearer " + token,
-        "Content-Type": "application/json",
-    }
-
-    response = requests.get(request_url, headers=headers)
+    response = get_message_from_server(request_url)
 
     res = "홈피팅 " + query + " 리스트입니다.\n\n"
     for each in response.json():
