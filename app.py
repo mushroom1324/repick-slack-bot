@@ -253,7 +253,8 @@ def subscribe_list():
 
 def handle_subscribe_response(msg):
     # orderNumber, name, nickname, phoneNumber, subscribeType, lastModifiedDate 반환
-    return "주문번호: " + msg['orderNumber'] + " 실명: " + msg['name'] + " 닉네임: " + msg['nickname'] + " 전화번호: " + msg['phoneNumber'] + " 구독타입: " + msg['subscribeType'] + " 신청일: " + msg['lastModifiedDate']
+    return "주문번호: " + msg['orderNumber'] + " 실명: " + msg['name'] + " 닉네임: " + msg['nickname'] + " 전화번호: " + msg['phoneNumber'] \
+        + "\n 구독타입: " + msg['subscribeType'] + " 신청일: " + msg['lastModifiedDate']
 
 
 @app.route('/order-update', methods=['POST'])
@@ -429,7 +430,7 @@ def home_fitting_list():
 
 def handle_home_fitting_response(msg):
     # name, homeFittingId, lastModifiedDate를 반환
-    return "홈피팅 번호: " + str(msg['homeFittingId']) + " " + msg['product']['name'] + " " + msg['lastModifiedDate']
+    return "홈피팅 번호: " + str(msg['homeFittingId']) + " 실명: " + msg['product']['name'] + " 날짜: " + msg['lastModifiedDate']
 
 
 @app.route('/settlement-update', methods=['POST'])
