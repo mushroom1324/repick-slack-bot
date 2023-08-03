@@ -275,7 +275,7 @@ def order_update():
                   headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query[0],
-                      "sellState": state
+                      "orderState": state
                   })
 
     return make_response("주문 상태를 변경합니다: " + query[0] + " " + query[1] + "\n주문 페이지에서 결과를 확인하세요.", 200, )
