@@ -230,7 +230,7 @@ def subscribe_deny():
 
 def subscribe(request_url, query):
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query
                   })
@@ -272,7 +272,7 @@ def order_update():
         return make_response("상태는 '입금완료', '배송중', '배송완료', '취소됨' 중 하나여야 합니다.", 200, )
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "orderNumber": query[0],
                       "sellState": state
@@ -329,7 +329,7 @@ def sell_order_update():
         return make_response("상태는 '입금완료', '배송중', '배송완료', '취소됨' 중 하나여야 합니다.", 200, )
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                     "orderNumber": query[0],
                     "sellState": state
@@ -393,7 +393,7 @@ def home_fitting_update():
 
     headers = {
         'accept': '*/*',
-        "Authorization": "Bearer " + token,
+        "Authorization": "Bearer " + access_token,
         "Content-Type": "application/json",
     }
 
@@ -444,7 +444,7 @@ def settlement():
     query = request.form['text']
 
     requests.post(request_url,
-                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+                  headers={"Authorization": "Bearer " + access_token, "Content-Type": "application/json"},
                   json={
                       "productNumber": query
                   })
