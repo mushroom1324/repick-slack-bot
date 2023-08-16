@@ -1,15 +1,53 @@
+import hashlib
+import hmac
+import time
 import json
 import os
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response, abort
 from slacker import Slacker
 import requests
 
 token = os.environ.get('TOKEN')
 access_token = os.environ.get('ACCESS_TOKEN')
+SIGNING_SECRET = os.environ.get('SLACK_SIGNING_SECRET')
 
 slack = Slacker(token)
 
 app = Flask(__name__)
+
+
+@app.before_request
+def before_request():
+    # Check only for routes that require Slack verification
+    if not verify_slack_request(request):
+        abort(403)
+
+
+def verify_slack_request(request):
+    # 1. Get Slack request headers
+    slack_signature = request.headers.get('X-Slack-Signature', '')
+    slack_request_timestamp = request.headers.get('X-Slack-Request-Timestamp', '')
+
+    # 2. Check timestamp
+    if abs(time.time() - float(slack_request_timestamp)) > 60 * 5:
+        # The request timestamp is older than five minutes
+        return False
+
+    # 3. Create a string based on the request
+    basestring = f"v0:{slack_request_timestamp}:".encode('utf-8') + request.get_data()
+
+    # 4. Generate a signature using HMAC SHA256
+    my_signature = 'v0=' + hmac.new(
+        SIGNING_SECRET.encode('utf-8'),
+        basestring,
+        hashlib.sha256
+    ).hexdigest()
+
+    # 5. Compare the generated signature with Slack's signature
+    if hmac.compare_digest(my_signature, slack_signature):
+        return True
+
+    return False
 
 
 def get_message_from_server(url):
