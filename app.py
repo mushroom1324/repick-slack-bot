@@ -322,13 +322,13 @@ def sell_order_list():
 
 
 def handle_sell_order_response(msg):
-    return "주문번호: " + msg['orderNumber'] \
-        + "\n 실명: " + msg['name'] \
-        + "\n 전화번호: " + msg['phoneNumber'] \
-        + "\n 신청일: " + msg['createdDate']\
-        + "\n반환희망일: " + msg['returnDate'] \
-        + "\n 수거주소: " + msg['address']['mainAddress'] + " " + msg['address']['detailAddress'] + " " + msg['address']['zipCode'] \
-        + "\n 요청사항: " + msg['requestDetail'] \
+    return "주문번호: " + str(msg['orderNumber']) \
+        + "\n 실명: " + str(msg['name']) \
+        + "\n 전화번호: " + str(msg['phoneNumber']) \
+        + "\n 신청일: " + str(msg['createdDate']) \
+        + "\n반환희망일: " + str(msg['returnDate']) \
+        + "\n 수거주소: " + str(msg['address']['mainAddress']) + " " + str(msg['address']['detailAddress']) + " " + str(msg['address']['zipCode']) \
+        + "\n 요청사항: " + str(msg['requestDetail']) \
         + "\n 수거옷장 수량: " + str(msg['productQuantity']) + "\n"
 
 
