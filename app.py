@@ -305,6 +305,8 @@ def sell_order_list():
 
     if query == '요청됨':
         state = "requested"
+    elif query == '배출됨':
+        state = "bag_ready"
     elif query == '취소됨':
         state = "cancelled"
     elif query == '배송됨':
